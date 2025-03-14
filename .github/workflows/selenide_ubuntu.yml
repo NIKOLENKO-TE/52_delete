@@ -60,7 +60,7 @@ jobs:
           if [ "${{ github.event.inputs.deployment_target }}" = "all_tests" ]; then
             TAG=""
           elif [ "${{ github.event.inputs.deployment_target }}" = "login" ]; then
-            TAG="-Dcucumber.filter.tags=\"@Login or @LoginWitString or @LoginWitTable or @InvalidPassword\""
+            TAG="-Dcucumber.filter.tags=\"(@Login or @LoginWitString or @LoginWitTable or @InvalidPassword)\""
           else
             TAG="-Dcucumber.filter.tags=@${{ github.event.inputs.deployment_target }}"
           fi
