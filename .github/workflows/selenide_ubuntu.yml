@@ -21,7 +21,7 @@ jobs:
       - name: ✅ ⚙️ Install Java version "18"
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '18'
       - name: ❎ ⌛️ Check Java version
         run: java -version
@@ -30,11 +30,13 @@ jobs:
       - name: ❎ ⌛️ Check Java Core version
         run: javac -version
 
-      # Установка Gradle, если gradlew отсутствует в проекте.
-      - name: ✅ ⚙️ Install Gradle
+      # Устанавливаем Gradle 7.6 (новая версия, поддерживающая useJUnitPlatform)
+      - name: ✅ ⚙️ Install Gradle 7.6
         run: |
-          sudo apt-get update
-          sudo apt-get install -y gradle
+          wget https://services.gradle.org/distributions/gradle-7.6-bin.zip
+          unzip gradle-7.6-bin.zip
+          sudo mv gradle-7.6 /opt/gradle
+          echo "/opt/gradle/bin" >> $GITHUB_PATH
           gradle --version
 
       - name: ✅ 🚿 Clean Gradle build
