@@ -37,17 +37,17 @@ jobs:
           sudo rm -f /usr/local/bin/chromedriver
           sudo rm -rf /usr/bin/chromedriver
 
-      - name: ✅ Install Chrome & Latest Chromedriver
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-          CHROME_VERSION=$(google-chrome --version | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
-          LATEST_CHROMEDRIVER_VERSION=$(curl -sS https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE)
-          wget -N https://storage.googleapis.com/chrome-for-testing-public/$LATEST_CHROMEDRIVER_VERSION/linux64/chromedriver-linux64.zip
-          unzip chromedriver-linux64.zip
-          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
-          chmod +x /usr/local/bin/chromedriver
-          chromedriver --version
+#      - name: ✅ Install Chrome & Latest Chromedriver
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install -y google-chrome-stable
+#          CHROME_VERSION=$(google-chrome --version | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
+#          LATEST_CHROMEDRIVER_VERSION=$(curl -sS https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE)
+#          wget -N https://storage.googleapis.com/chrome-for-testing-public/$LATEST_CHROMEDRIVER_VERSION/linux64/chromedriver-linux64.zip
+#          unzip chromedriver-linux64.zip
+#          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
+#          chmod +x /usr/local/bin/chromedriver
+#          chromedriver --version
 
       - name: ✅ 🚿 Clean Gradle build
         run: gradle clean
