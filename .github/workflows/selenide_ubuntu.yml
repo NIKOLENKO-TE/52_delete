@@ -56,7 +56,7 @@ jobs:
         run: ls -R
       - name: ▶️ 🐞 Run tests
         run: |
-          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" gradle clean test -Dcucumber.filter.tags="@Login" > build.log 2>&1 || true
+          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" gradle clean test -Dcucumber.filter.tags=@LoginWitString > build.log 2>&1 || true
 #          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" gradle clean build > build.log 2>&1 || true
       - name: ✅ 📂 List Directories after tests
         if: always()
