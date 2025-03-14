@@ -1,4 +1,4 @@
-name: 🐞 Java CI with Gradle [UBUNTU] Selenium Tests (New Project without gradlew)
+name: 🐞 Java CI with Gradle [UBUNTU] Selenide Tests
 on:
   push:
     branches: [ main, master ]
@@ -13,7 +13,12 @@ on:
         type: choice
         options:
           - 'all_tests'
-          - 'login_users'
+          - 'smoke'
+          - 'regression'
+          - 'login'
+          - 'LoginWitString'
+          - 'LoginWitTable'
+          - 'InvalidPassword'
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -45,18 +50,6 @@ jobs:
           sudo rm -f /usr/local/bin/chromedriver
           sudo rm -rf /usr/bin/chromedriver
 
-#      - name: ✅ Install Chrome & Latest Chromedriver
-#        run: |
-#          sudo apt-get update
-#          sudo apt-get install -y google-chrome-stable
-#          CHROME_VERSION=$(google-chrome --version | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
-#          LATEST_CHROMEDRIVER_VERSION=$(curl -sS https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE)
-#          wget -N https://storage.googleapis.com/chrome-for-testing-public/$LATEST_CHROMEDRIVER_VERSION/linux64/chromedriver-linux64.zip
-#          unzip chromedriver-linux64.zip
-#          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
-#          chmod +x /usr/local/bin/chromedriver
-#          chromedriver --version
-
       - name: ✅ 🚿 Clean Gradle build
         run: gradle clean
       - name: ✅ 📂 List Directories before tests
@@ -64,8 +57,14 @@ jobs:
         run: ls -R
       - name: ▶️ 🐞 Run tests
         run: |
-          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" gradle clean test -Dcucumber.filter.tags=@LoginWitString > build.log 2>&1 || true
-#          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" gradle clean build > build.log 2>&1 || true
+          if [ "${{ github.event.inputs.deployment_target }}" = "all_tests" ]; then
+            TAG=""
+          else
+            TAG="-Dcucumber.filter.tags=@${{ github.event.inputs.deployment_target }}"
+          fi
+          echo "Running tests with tag filter: $TAG"
+          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" gradle clean test $TAG > build.log 2>&1 || true
+
       - name: ✅ 📂 List Directories after tests
         if: always()
         run: ls -R
@@ -89,8 +88,3 @@ jobs:
           name: test-attachments.zip
           path: |
             src/test_logs/*
-
-      # Останавливаем Selenium-контейнер после завершения тестов
-      - name: 🛑 Stop Selenium Container
-        if: always()
-        run: docker rm -f selenium-chrome
