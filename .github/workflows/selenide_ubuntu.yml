@@ -88,3 +88,10 @@ jobs:
           name: test-attachments.zip
           path: |
             src/test_logs/*
+
+      - name: ✅ 📦 Archive [Cucumber Report]
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cucumber-report.zip
+          path: target/cucumber-reports.html
