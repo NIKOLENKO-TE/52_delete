@@ -11,13 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      # Запускаем контейнер Selenium с монтированием ресурсов из репозитория.
-      - name: 🚀 Start Selenium Container
-        run: |
-          docker pull selenium/standalone-chrome
-          docker run -d -p 4444:4444 -p 5900:5900 --name selenium-chrome -v ${{ github.workspace }}/src/test/resources:/app/src/test/resources selenium/standalone-chrome
-
       - name: ✅ ⚙️ Install Java version "18"
         uses: actions/setup-java@v4
         with:
