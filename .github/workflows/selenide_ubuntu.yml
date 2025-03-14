@@ -1,4 +1,4 @@
-name: 🐞 Java CI with Gradle [UBUNTU] Selenium Tests (New Project)
+name: 🐞 Java CI with Gradle [UBUNTU] Selenium Tests (New Project without gradlew)
 on:
   push:
     branches: [ main, master ]
@@ -29,17 +29,21 @@ jobs:
         run: echo $JAVA_HOME
       - name: ❎ ⌛️ Check Java Core version
         run: javac -version
-      - name: ✅ ⚙️ Set execute permission for gradlew
-        run: chmod +x gradlew
-      - name: ❎ ⌛️ Check Gradle version
-        run: ./gradlew --version
+
+      # Установка Gradle, если gradlew отсутствует в проекте.
+      - name: ✅ ⚙️ Install Gradle
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gradle
+          gradle --version
+
       - name: ✅ 🚿 Clean Gradle build
-        run: ./gradlew clean
+        run: gradle clean
       - name: ✅ 📂 List Directories before tests
         if: always()
         run: ls -R
       - name: ▶️ 🐞 Run tests
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" ./gradlew -Pbrowser=chrome -Pmode=normal clean build > build.log 2>&1 || true
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" gradle clean build > build.log 2>&1 || true
       - name: ✅ 📂 List Directories after tests
         if: always()
         run: ls -R
@@ -64,7 +68,7 @@ jobs:
           path: |
             src/test_logs/*
 
-      # Останавливаем Selenium контейнер после тестов
+      # Останавливаем Selenium-контейнер после завершения тестов
       - name: 🛑 Stop Selenium Container
         if: always()
         run: docker rm -f selenium-chrome
