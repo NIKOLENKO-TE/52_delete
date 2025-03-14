@@ -1,0 +1,70 @@
+name: 🐞 Java CI with Gradle [UBUNTU] Selenium Tests (New Project)
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Запускаем контейнер Selenium с монтированием ресурсов из репозитория.
+      - name: 🚀 Start Selenium Container
+        run: |
+          docker pull selenium/standalone-chrome
+          docker run -d -p 4444:4444 -p 5900:5900 --name selenium-chrome -v ${{ github.workspace }}/src/test/resources:/app/src/test/resources selenium/standalone-chrome
+
+      - name: ✅ ⚙️ Install Java version "18"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '18'
+      - name: ❎ ⌛️ Check Java version
+        run: java -version
+      - name: ❎ ⌛️ Check JVM version
+        run: echo $JAVA_HOME
+      - name: ❎ ⌛️ Check Java Core version
+        run: javac -version
+      - name: ✅ ⚙️ Set execute permission for gradlew
+        run: chmod +x gradlew
+      - name: ❎ ⌛️ Check Gradle version
+        run: ./gradlew --version
+      - name: ✅ 🚿 Clean Gradle build
+        run: ./gradlew clean
+      - name: ✅ 📂 List Directories before tests
+        if: always()
+        run: ls -R
+      - name: ▶️ 🐞 Run tests
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" ./gradlew -Pbrowser=chrome -Pmode=normal clean build > build.log 2>&1 || true
+      - name: ✅ 📂 List Directories after tests
+        if: always()
+        run: ls -R
+      - name: ✅ 📦 Archive [Gradle build log]
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gradle-build-log.zip
+          path: build.log
+      - name: ✅ 📦 Archive [Test results]
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gradle-results.zip
+          path: |
+            build/reports/tests/test/*
+      - name: ✅ 📦 Archive [Test attachments]
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-attachments.zip
+          path: |
+            src/test_logs/*
+
+      # Останавливаем Selenium контейнер после тестов
+      - name: 🛑 Stop Selenium Container
+        if: always()
+        run: docker rm -f selenium-chrome
