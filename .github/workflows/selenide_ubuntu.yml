@@ -30,12 +30,12 @@ jobs:
       - name: ❎ ⌛️ Check Java Core version
         run: javac -version
 
-      # Устанавливаем Gradle 7.6 (новая версия, поддерживающая useJUnitPlatform)
-      - name: ✅ ⚙️ Install Gradle 7.6
+      # Устанавливаем Gradle 8.13 (новая версия, поддерживающая useJUnitPlatform)
+      - name: ✅ ⚙️ Install Gradle 8.13
         run: |
-          wget https://services.gradle.org/distributions/gradle-7.6-bin.zip
-          unzip gradle-7.6-bin.zip
-          sudo mv gradle-7.6 /opt/gradle
+          wget https://services.gradle.org/distributions/gradle-8.13-bin.zip
+          unzip gradle-8.13-bin.zip
+          sudo mv gradle-8.13 /opt/gradle
           echo "/opt/gradle/bin" >> $GITHUB_PATH
           gradle --version
 
@@ -45,7 +45,9 @@ jobs:
         if: always()
         run: ls -R
       - name: ▶️ 🐞 Run tests
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" gradle clean build > build.log 2>&1 || true
+        run: |
+          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" gradle clean test -Dcucumber.filter.tags="@Login" > build.log 2>&1 || true
+#          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" gradle clean build > build.log 2>&1 || true
       - name: ✅ 📂 List Directories after tests
         if: always()
         run: ls -R
