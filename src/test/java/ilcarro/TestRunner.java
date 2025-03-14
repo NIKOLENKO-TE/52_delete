@@ -12,7 +12,7 @@ import org.junit.platform.suite.api.Suite;
 @ConfigurationParameter(key = "cucumber.plugin", value = "html:target/cucumber-reports.html, json:target/cucumber-reports.json")
 // Комментируем эту строку если запускаем тесты командой
 // gradle clean test -Dcucumber.filter.tags=@AddCar
-@ConfigurationParameter(key = "cucumber.filter.tags", value = "@LoginWitString")
+//@ConfigurationParameter(key = "cucumber.filter.tags", value = "@LoginWitString")
 public class TestRunner {
 }
 
