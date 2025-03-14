@@ -87,7 +87,7 @@ jobs:
         if: always()
         with:
           name: test-attachments.zip
-          path: src/test_logs/*
+          path: target/*
       - name: ✅ 📦 Archive [Cucumber Report]
         uses: actions/upload-artifact@v4
         if: always()
