@@ -32,6 +32,11 @@ jobs:
           echo "/opt/gradle/bin" >> $GITHUB_PATH
           gradle --version
 
+      - name: 🗑️ Remove old Chromedriver
+        run: |
+          sudo rm -f /usr/local/bin/chromedriver
+          sudo rm -rf /usr/bin/chromedriver
+
       - name: ✅ Install Chrome & Latest Chromedriver
         run: |
           sudo apt-get update
