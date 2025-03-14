@@ -32,14 +32,16 @@ jobs:
           echo "/opt/gradle/bin" >> $GITHUB_PATH
           gradle --version
 
-      - name: ✅ Install Chrome & Chromedriver
+      - name: ✅ Install Chrome & Latest Chromedriver
         run: |
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
-          LATEST_CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+          CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f1)
+          LATEST_CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
           wget -N https://chromedriver.storage.googleapis.com/$LATEST_CHROMEDRIVER_VERSION/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
           sudo mv chromedriver /usr/local/bin/
+          chmod +x /usr/local/bin/chromedriver
           chromedriver --version
 
       - name: ✅ 🚿 Clean Gradle build
