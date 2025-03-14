@@ -59,6 +59,8 @@ jobs:
         run: |
           if [ "${{ github.event.inputs.deployment_target }}" = "all_tests" ]; then
             TAG=""
+          elif [ "${{ github.event.inputs.deployment_target }}" = "login" ]; then
+            TAG='-Dcucumber.filter.tags="@Login or @LoginWitString or @LoginWitTable or @InvalidPassword"'
           else
             TAG="-Dcucumber.filter.tags=@${{ github.event.inputs.deployment_target }}"
           fi
@@ -79,16 +81,13 @@ jobs:
         if: always()
         with:
           name: gradle-results.zip
-          path: |
-            build/reports/tests/test/*
+          path: build/reports/tests/test/*
       - name: ✅ 📦 Archive [Test attachments]
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-attachments.zip
-          path: |
-            src/test_logs/*
-
+          path: src/test_logs/*
       - name: ✅ 📦 Archive [Cucumber Report]
         uses: actions/upload-artifact@v4
         if: always()
